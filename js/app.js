@@ -742,27 +742,44 @@ class TodoApp {
      * Handle initialization error
      */
     handleInitializationError(error) {
-        // Show error in UI
-        document.body.innerHTML = `
-            <div style="display: flex; align-items: center; justify-content: center; min-height: 100vh; font-family: sans-serif; background: #f3f4f6; color: #374151;">
-                <div style="text-align: center; max-width: 400px; padding: 2rem;">
-                    <h1 style="color: #ef4444; margin-bottom: 1rem;">App Failed to Load</h1>
-                    <p style="margin-bottom: 1rem;">There was an error loading the Todo List app. This might be due to:</p>
-                    <ul style="text-align: left; margin-bottom: 1rem;">
-                        <li>Browser storage limitations</li>
-                        <li>Corrupted data</li>
-                        <li>Browser compatibility issues</li>
-                    </ul>
-                    <button onclick="window.location.reload()" style="background: #2563eb; color: white; border: none; padding: 0.5rem 1rem; border-radius: 0.5rem; cursor: pointer;">
-                        Reload Page
-                    </button>
-                    <br><br>
-                    <button onclick="localStorage.clear(); sessionStorage.clear(); window.location.reload()" style="background: #ef4444; color: white; border: none; padding: 0.5rem 1rem; border-radius: 0.5rem; cursor: pointer;">
-                        Clear All Data & Reload
-                    </button>
+        console.error('Detailed initialization error:', error);
+        console.error('Error name:', error.name);
+        console.error('Error message:', error.message);
+        console.error('Error stack:', error.stack);
+        
+        // Don't replace the entire DOM immediately - show error in console first
+        setTimeout(() => {
+            // Show error in UI
+            document.body.innerHTML = `
+                <div style="display: flex; align-items: center; justify-content: center; min-height: 100vh; font-family: sans-serif; background: #f3f4f6; color: #374151;">
+                    <div style="text-align: center; max-width: 600px; padding: 2rem;">
+                        <h1 style="color: #ef4444; margin-bottom: 1rem;">App Failed to Load</h1>
+                        <p style="margin-bottom: 1rem;">There was an error loading the Todo List app:</p>
+                        <div style="background: #fee; border: 1px solid #fcc; padding: 1rem; margin: 1rem 0; border-radius: 4px;">
+                            <strong>Error:</strong> ${error.message}<br>
+                            <small style="font-family: monospace;">${error.stack?.split('\n')[0] || 'No stack trace'}</small>
+                        </div>
+                        <p style="margin-bottom: 1rem;">This might be due to:</p>
+                        <ul style="text-align: left; margin-bottom: 1rem;">
+                            <li>JavaScript syntax errors</li>
+                            <li>Missing or incorrectly loaded dependencies</li>
+                            <li>Browser storage limitations</li>
+                            <li>Browser compatibility issues</li>
+                        </ul>
+                        <button onclick="window.location.reload()" style="background: #2563eb; color: white; border: none; padding: 0.5rem 1rem; border-radius: 0.5rem; cursor: pointer; margin-right: 0.5rem;">
+                            Reload Page
+                        </button>
+                        <button onclick="localStorage.clear(); sessionStorage.clear(); window.location.reload()" style="background: #ef4444; color: white; border: none; padding: 0.5rem 1rem; border-radius: 0.5rem; cursor: pointer;">
+                            Clear All Data & Reload
+                        </button>
+                        <br><br>
+                        <button onclick="console.log('Full error:', error); alert('Check browser console for details')" style="background: #6b7280; color: white; border: none; padding: 0.5rem 1rem; border-radius: 0.5rem; cursor: pointer;">
+                            Show Debug Info
+                        </button>
+                    </div>
                 </div>
-            </div>
-        `;
+            `;
+        }, 100); // Small delay to allow console logs to appear
     }
 
     /**

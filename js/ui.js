@@ -1,5 +1,5 @@
 /**
- * UI Manager for Todo List App
+ * UI Manager for Todo List App - Updated at 2024-01-01 12:00:00
  * Handles DOM manipulation, event binding, and user interactions
  */
 
@@ -26,17 +26,26 @@ class UIManager {
     init() {
         console.log('UIManager init started');
         try {
+            console.log('About to cache elements...');
             this.cacheElements();
             console.log('Elements cached successfully');
+            
+            console.log('About to bind events...');
             this.bindEvents();
             console.log('Events bound successfully');
+            
+            console.log('About to setup theme...');
             this.setupTheme();
             console.log('Theme setup successful');
+            
+            console.log('About to setup accessibility...');
             this.setupAccessibility();
             console.log('Accessibility setup successful');
+            
             console.log('UIManager initialization completed');
         } catch (error) {
-            console.error('Error in UIManager init:', error);
+            console.error('Error in UIManager init step:', error);
+            console.error('Error stack:', error.stack);
             throw error;
         }
     }
@@ -101,96 +110,110 @@ class UIManager {
      * Bind event listeners
      */
     bindEvents() {
+        console.log('bindEvents started - methods available:', Object.getOwnPropertyNames(Object.getPrototypeOf(this)).filter(name => name.startsWith('handle')));
+        
+        // Defensive binding - only bind if method exists
+        const bind = (element, eventType, methodName, ...args) => {
+            if (element && this[methodName] && typeof this[methodName] === 'function') {
+                try {
+                    if (args.length > 0) {
+                        // For methods that need debouncing or other wrapper functions
+                        element.addEventListener(eventType, ...args);
+                    } else {
+                        element.addEventListener(eventType, this[methodName].bind(this));
+                    }
+                    console.log(`Successfully bound ${methodName} to ${eventType}`);
+                } catch (error) {
+                    console.error(`Error binding ${methodName}:`, error);
+                }
+            } else {
+                console.warn(`Method ${methodName} not found or element missing`);
+            }
+        };
+        
         // Add task form
-        if (this.elements.addTaskForm) {
-            this.elements.addTaskForm.addEventListener('submit', this.handleAddTask.bind(this));
-        }
+        bind(this.elements.addTaskForm, 'submit', 'handleAddTask');
 
-        // Search and filters
-        if (this.elements.searchInput) {
-            this.elements.searchInput.addEventListener('input', 
-                Utils.debounce(this.handleSearch.bind(this), 300));
-        }
-
-        if (this.elements.statusFilter) {
-            this.elements.statusFilter.addEventListener('change', this.handleFilterChange.bind(this));
-        }
-
-        if (this.elements.priorityFilter) {
-            this.elements.priorityFilter.addEventListener('change', this.handleFilterChange.bind(this));
-        }
-
-        if (this.elements.sortSelect) {
-            this.elements.sortSelect.addEventListener('change', this.handleSortChange.bind(this));
-        }
-
-        // Theme toggle
-        if (this.elements.themeToggle) {
-            this.elements.themeToggle.addEventListener('click', this.handleThemeToggle.bind(this));
-        }
-
-        // Settings
-        if (this.elements.settingsBtn) {
+        // Search and filters  
+        if (this.elements.searchInput && this.handleSearch && Utils?.debounce) {
             try {
-                console.log('Binding settings button, method exists:', typeof this.openSettingsModal);
-                this.elements.settingsBtn.addEventListener('click', this.openSettingsModal.bind(this));
+                this.elements.searchInput.addEventListener('input', 
+                    Utils.debounce(this.handleSearch.bind(this), 300));
+                console.log('Search input bound with debounce');
             } catch (error) {
-                console.error('Error binding settings button:', error);
+                console.error('Error binding search input:', error);
             }
         }
 
+        bind(this.elements.statusFilter, 'change', 'handleFilterChange');
+        bind(this.elements.priorityFilter, 'change', 'handleFilterChange');
+        bind(this.elements.sortSelect, 'change', 'handleSortChange');
+
+        // Theme toggle
+        bind(this.elements.themeToggle, 'click', 'handleThemeToggle');
+
+        // Settings
+        bind(this.elements.settingsBtn, 'click', 'openSettingsModal');
+
         // Export/Import
-        if (this.elements.exportBtn) {
-            this.elements.exportBtn.addEventListener('click', this.handleExport.bind(this));
-        }
-
-        if (this.elements.importBtn) {
-            this.elements.importBtn.addEventListener('click', this.handleImport.bind(this));
-        }
-
-        if (this.elements.importFileInput) {
-            this.elements.importFileInput.addEventListener('change', this.handleFileImport.bind(this));
-        }
-
-        if (this.elements.clearCompletedBtn) {
-            this.elements.clearCompletedBtn.addEventListener('click', this.handleClearCompleted.bind(this));
-        }
+        bind(this.elements.exportBtn, 'click', 'handleExport');
+        bind(this.elements.importBtn, 'click', 'handleImport');
+        bind(this.elements.importFileInput, 'change', 'handleFileImport');
+        bind(this.elements.clearCompletedBtn, 'click', 'handleClearCompleted');
 
         // Modal events
         this.bindModalEvents();
 
         // Keyboard shortcuts
-        document.addEventListener('keydown', this.handleKeyboardShortcuts.bind(this));
+        if (this.handleKeyboardShortcuts) {
+            document.addEventListener('keydown', this.handleKeyboardShortcuts.bind(this));
+        }
 
         // Task container events (delegated)
-        if (this.elements.tasksContainer) {
-            this.elements.tasksContainer.addEventListener('click', this.handleTaskAction.bind(this));
-            this.elements.tasksContainer.addEventListener('change', this.handleTaskCheckbox.bind(this));
-        }
+        bind(this.elements.tasksContainer, 'click', 'handleTaskAction');
+        bind(this.elements.tasksContainer, 'change', 'handleTaskCheckbox');
+        
+        console.log('bindEvents completed');
     }
 
     /**
      * Bind modal events
      */
     bindModalEvents() {
+        console.log('bindModalEvents started');
+        
+        // Helper function for safe binding
+        const safeBind = (element, event, handler) => {
+            if (element && handler && typeof handler === 'function') {
+                try {
+                    element.addEventListener(event, handler);
+                    return true;
+                } catch (error) {
+                    console.error('Error in safeBind:', error);
+                    return false;
+                }
+            }
+            return false;
+        };
+        
         // Settings modal
         const settingsModal = this.elements.settingsModal;
         if (settingsModal) {
             const closeBtn = settingsModal.querySelector('.modal-close');
             const overlay = settingsModal.querySelector('.modal-overlay');
             
-            if (closeBtn) closeBtn.addEventListener('click', () => this.closeModal(settingsModal));
-            if (overlay) overlay.addEventListener('click', () => this.closeModal(settingsModal));
+            safeBind(closeBtn, 'click', () => this.closeModal && this.closeModal(settingsModal));
+            safeBind(overlay, 'click', () => this.closeModal && this.closeModal(settingsModal));
 
             // Settings form elements
             const notificationsToggle = document.getElementById('notifications-enabled');
-            if (notificationsToggle) {
-                notificationsToggle.addEventListener('change', this.handleNotificationToggle.bind(this));
+            if (notificationsToggle && this.handleNotificationToggle) {
+                safeBind(notificationsToggle, 'change', this.handleNotificationToggle.bind(this));
             }
 
             const clearDataBtn = document.getElementById('clear-all-data-btn');
-            if (clearDataBtn) {
-                clearDataBtn.addEventListener('click', this.handleClearAllData.bind(this));
+            if (clearDataBtn && this.handleClearAllData) {
+                safeBind(clearDataBtn, 'click', this.handleClearAllData.bind(this));
             }
         }
 
@@ -201,21 +224,23 @@ class UIManager {
             const overlay = taskModal.querySelector('.modal-overlay');
             const cancelBtn = taskModal.querySelector('.cancel-btn');
             
-            if (closeBtn) closeBtn.addEventListener('click', () => this.closeModal(taskModal));
-            if (overlay) overlay.addEventListener('click', () => this.closeModal(taskModal));
-            if (cancelBtn) cancelBtn.addEventListener('click', () => this.closeModal(taskModal));
+            safeBind(closeBtn, 'click', () => this.closeModal && this.closeModal(taskModal));
+            safeBind(overlay, 'click', () => this.closeModal && this.closeModal(taskModal));
+            safeBind(cancelBtn, 'click', () => this.closeModal && this.closeModal(taskModal));
 
-            if (this.elements.editTaskForm) {
-                this.elements.editTaskForm.addEventListener('submit', this.handleEditTask.bind(this));
+            if (this.elements.editTaskForm && this.handleEditTask) {
+                safeBind(this.elements.editTaskForm, 'submit', this.handleEditTask.bind(this));
             }
         }
 
         // Close modals on Escape key
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape') {
+        safeBind(document, 'keydown', (e) => {
+            if (e.key === 'Escape' && this.closeAllModals) {
                 this.closeAllModals();
             }
         });
+        
+        console.log('bindModalEvents completed');
     }
 
     /**
