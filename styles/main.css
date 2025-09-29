@@ -662,6 +662,214 @@ body {
   }
 }
 
+/* Statistics Charts */
+.stats-section {
+  margin-bottom: 2rem;
+}
+
+.stats-section h3 {
+  margin-bottom: 1rem;
+  color: var(--text-secondary);
+}
+
+.priority-bar {
+  height: 20px;
+  border-radius: 10px;
+  overflow: hidden;
+  display: flex;
+  background: var(--bg-tertiary);
+}
+
+.priority-segment {
+  height: 100%;
+  transition: width 0.3s ease;
+}
+
+.priority-segment.high {
+  background: var(--error-color);
+}
+
+.priority-segment.medium {
+  background: var(--warning-color);
+}
+
+.priority-segment.low {
+  background: var(--success-color);
+}
+
+.priority-legend {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  margin-top: 0.5rem;
+  font-size: 0.8rem;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.legend-item::before {
+  content: '';
+  width: 12px;
+  height: 12px;
+  border-radius: 2px;
+}
+
+.legend-item.high::before {
+  background: var(--error-color);
+}
+
+.legend-item.medium::before {
+  background: var(--warning-color);
+}
+
+.legend-item.low::before {
+  background: var(--success-color);
+}
+
+.legend-item.created::before {
+  background: var(--secondary-color);
+}
+
+.legend-item.completed::before {
+  background: var(--success-color);
+}
+
+.tag-cloud {
+  line-height: 2;
+}
+
+.tag-item {
+  display: inline-block;
+  margin: 0.25rem;
+  padding: 0.25rem 0.5rem;
+  background: var(--bg-tertiary);
+  border-radius: 1rem;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.tag-item:hover {
+  background: var(--primary-color);
+  color: white;
+}
+
+.productivity-bars {
+  display: flex;
+  gap: 4px;
+  align-items: end;
+  height: 100px;
+  margin-bottom: 0.5rem;
+}
+
+.day-bar {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  height: 100%;
+}
+
+.bar-created,
+.bar-completed {
+  width: 100%;
+  border-radius: 2px 2px 0 0;
+  min-height: 2px;
+  position: absolute;
+  bottom: 20px;
+}
+
+.bar-created {
+  background: var(--secondary-color);
+  opacity: 0.6;
+}
+
+.bar-completed {
+  background: var(--success-color);
+  bottom: 20px;
+}
+
+.day-label {
+  position: absolute;
+  bottom: 0;
+  font-size: 0.7rem;
+  color: var(--text-muted);
+}
+
+.age-bars {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.age-item {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.age-label {
+  min-width: 80px;
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+}
+
+.age-bar {
+  flex: 1;
+  height: 20px;
+  background: var(--bg-tertiary);
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.age-fill {
+  height: 100%;
+  background: var(--primary-color);
+  transition: width 0.3s ease;
+  border-radius: 10px;
+}
+
+.age-count {
+  min-width: 30px;
+  text-align: right;
+  font-weight: 600;
+  color: var(--primary-color);
+}
+
+.insights {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.insight-item {
+  padding: 0.75rem;
+  background: var(--bg-secondary);
+  border-radius: var(--border-radius);
+  border-left: 3px solid var(--primary-color);
+}
+
+.no-data {
+  text-align: center;
+  padding: 2rem;
+  color: var(--text-muted);
+  font-style: italic;
+}
+
+/* Drop Indicator */
+.drop-indicator {
+  height: 2px;
+  background: var(--primary-color);
+  margin: 4px 0;
+  border-radius: 1px;
+  animation: pulse 1s infinite;
+}
+
 /* Utilities */
 .hidden {
   display: none !important;
