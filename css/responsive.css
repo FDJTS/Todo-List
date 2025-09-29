@@ -1,0 +1,467 @@
+/* Responsive Design */
+
+/* Mobile First Approach */
+/* Base styles are already mobile-friendly */
+
+/* Tablet Styles */
+@media (max-width: 768px) {
+    .container {
+        padding: 0 var(--spacing-sm);
+    }
+    
+    .header .container {
+        flex-direction: column;
+        gap: var(--spacing-md);
+        text-align: center;
+    }
+    
+    .header-controls {
+        order: -1;
+        justify-content: center;
+    }
+    
+    .form-row {
+        grid-template-columns: 1fr;
+        gap: var(--spacing-sm);
+    }
+    
+    .filters-row {
+        grid-template-columns: 1fr;
+        gap: var(--spacing-md);
+    }
+    
+    .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: var(--spacing-sm);
+    }
+    
+    .task-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: var(--spacing-sm);
+    }
+    
+    .task-actions {
+        margin-left: 0;
+        align-self: flex-end;
+        position: absolute;
+        top: var(--spacing-md);
+        right: var(--spacing-md);
+    }
+    
+    .task-item:hover .task-action-btn,
+    .task-action-btn {
+        opacity: 1;
+        transform: scale(1);
+    }
+    
+    .modal {
+        padding: var(--spacing-sm);
+    }
+    
+    .modal-content {
+        max-height: 95vh;
+    }
+    
+    .footer-content {
+        flex-direction: column;
+        text-align: center;
+        gap: var(--spacing-sm);
+    }
+    
+    .footer-actions {
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+    
+    .toast-container {
+        top: var(--spacing-sm);
+        right: var(--spacing-sm);
+        left: var(--spacing-sm);
+    }
+    
+    .toast {
+        min-width: unset;
+        width: 100%;
+    }
+}
+
+/* Mobile Styles */
+@media (max-width: 480px) {
+    html {
+        font-size: 14px;
+    }
+    
+    .app-title {
+        font-size: var(--font-size-xl);
+    }
+    
+    .main {
+        padding: var(--spacing-lg) 0;
+    }
+    
+    .add-task-form,
+    .filters-row {
+        padding: var(--spacing-md);
+    }
+    
+    .stats-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .stat-card {
+        padding: var(--spacing-md);
+    }
+    
+    .stat-value {
+        font-size: var(--font-size-2xl);
+    }
+    
+    .task-item {
+        padding: var(--spacing-md);
+    }
+    
+    .task-title {
+        font-size: var(--font-size-base);
+    }
+    
+    .task-meta {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: var(--spacing-xs);
+    }
+    
+    .footer-actions {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .footer-btn {
+        width: 100%;
+        justify-content: center;
+    }
+}
+
+/* Large Desktop */
+@media (min-width: 1200px) {
+    .container {
+        max-width: 1400px;
+    }
+    
+    .form-row {
+        grid-template-columns: 3fr 1fr 1fr;
+    }
+    
+    .filters-row {
+        grid-template-columns: 3fr 1fr 1fr 1fr;
+    }
+    
+    .stats-grid {
+        grid-template-columns: repeat(4, 1fr);
+    }
+    
+    .task-item {
+        padding: var(--spacing-xl);
+    }
+}
+
+/* Ultra-wide Screens */
+@media (min-width: 1600px) {
+    .container {
+        max-width: 1600px;
+    }
+    
+    .tasks-container {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: var(--spacing-md);
+    }
+    
+    .empty-state,
+    .loading-state {
+        grid-column: 1 / -1;
+    }
+}
+
+/* Landscape Mobile */
+@media (max-width: 768px) and (orientation: landscape) {
+    .header {
+        padding: var(--spacing-md) 0;
+    }
+    
+    .main {
+        padding: var(--spacing-lg) 0;
+    }
+    
+    .stats-grid {
+        grid-template-columns: repeat(4, 1fr);
+    }
+    
+    .modal-content {
+        max-height: 85vh;
+    }
+}
+
+/* Touch Device Optimizations */
+@media (hover: none) and (pointer: coarse) {
+    .task-action-btn {
+        opacity: 1;
+        transform: scale(1);
+        width: 40px;
+        height: 40px;
+    }
+    
+    .btn,
+    .footer-btn,
+    .theme-toggle,
+    .settings-btn {
+        min-height: 44px;
+        min-width: 44px;
+    }
+    
+    .task-checkbox {
+        width: 24px;
+        height: 24px;
+    }
+    
+    .toggle-slider {
+        width: 52px;
+        height: 32px;
+    }
+    
+    .toggle-slider::before {
+        width: 24px;
+        height: 24px;
+        top: 3px;
+        left: 3px;
+    }
+    
+    .toggle-input:checked + .toggle-slider::before {
+        transform: translateX(20px);
+    }
+}
+
+/* High DPI Displays */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+    .app-icon,
+    .theme-icon,
+    svg {
+        image-rendering: -webkit-optimize-contrast;
+        image-rendering: crisp-edges;
+    }
+}
+
+/* Reduced Motion */
+@media (prefers-reduced-motion: reduce) {
+    .task-item:hover {
+        transform: none;
+    }
+    
+    .btn:hover,
+    .add-task-btn:hover {
+        transform: none;
+    }
+    
+    .stat-card:hover {
+        transform: none;
+    }
+    
+    .task-action-btn {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+/* Print Optimizations */
+@media print {
+    .container {
+        max-width: none;
+        padding: 0;
+    }
+    
+    .task-item {
+        border: 1px solid #000 !important;
+        background: white !important;
+        color: black !important;
+        box-shadow: none !important;
+        margin-bottom: 0.5cm;
+        padding: 0.5cm;
+        page-break-inside: avoid;
+    }
+    
+    .task-title {
+        font-weight: bold;
+        margin-bottom: 0.2cm;
+    }
+    
+    .task-tags {
+        display: inline;
+    }
+    
+    .task-tag {
+        background: none !important;
+        color: black !important;
+        border: 1px solid black;
+        margin-right: 0.2cm;
+    }
+    
+    .task-priority {
+        background: none !important;
+        color: black !important;
+        border: 1px solid black;
+        padding: 0.1cm 0.2cm;
+    }
+    
+    .stats-grid {
+        grid-template-columns: repeat(4, 1fr);
+        margin-bottom: 1cm;
+    }
+    
+    .stat-card {
+        border: 1px solid black !important;
+        background: white !important;
+        text-align: center;
+        padding: 0.5cm;
+    }
+    
+    .tasks-container {
+        display: block;
+    }
+}
+
+/* Accessibility - Focus Management */
+@media (prefers-reduced-motion: no-preference) {
+    *:focus {
+        transition: outline-offset 0.2s ease;
+    }
+}
+
+/* Screen Reader Optimizations */
+@media screen and (max-width: 0) {
+    .sr-only {
+        position: static;
+        width: auto;
+        height: auto;
+        padding: 0;
+        margin: 0;
+        overflow: visible;
+        clip: auto;
+        white-space: normal;
+    }
+}
+
+/* Contrast Adjustments */
+@media (prefers-contrast: high) {
+    :root {
+        --border-color: #000000;
+    }
+    
+    [data-theme="dark"] {
+        --border-color: #ffffff;
+    }
+    
+    .task-item,
+    .btn,
+    .modal-content {
+        border-width: 2px;
+    }
+}
+
+/* Viewport Height Adjustments for Mobile Browsers */
+@media (max-width: 768px) {
+    .app {
+        min-height: 100vh;
+        min-height: -webkit-fill-available;
+    }
+    
+    .modal {
+        height: 100vh;
+        height: -webkit-fill-available;
+    }
+}
+
+/* Flexbox Fallbacks for Older Browsers */
+@supports not (display: grid) {
+    .stats-grid {
+        display: flex;
+        flex-wrap: wrap;
+    }
+    
+    .stat-card {
+        flex: 1;
+        min-width: 200px;
+        margin: var(--spacing-sm);
+    }
+    
+    .filters-row {
+        display: flex;
+        flex-wrap: wrap;
+    }
+    
+    .filter-group,
+    .search-group,
+    .sort-group {
+        flex: 1;
+        min-width: 200px;
+        margin: var(--spacing-sm);
+    }
+    
+    .form-row {
+        display: flex;
+        flex-wrap: wrap;
+    }
+    
+    .form-group {
+        flex: 1;
+        min-width: 150px;
+        margin: var(--spacing-sm);
+    }
+}
+
+/* CSS Grid Fallbacks */
+@supports not (display: grid) {
+    .tasks-container {
+        display: block;
+    }
+    
+    .task-item {
+        margin-bottom: var(--spacing-md);
+    }
+}
+
+/* Safari Specific Fixes */
+@media not all and (min-resolution: .001dpcm) {
+    @supports (-webkit-appearance: none) {
+        .task-input,
+        .search-input {
+            -webkit-appearance: none;
+        }
+        
+        select {
+            -webkit-appearance: none;
+            background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath fill='none' stroke='%23343a40' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 0.75rem center;
+            background-size: 16px 12px;
+            padding-right: 2.5rem;
+        }
+    }
+}
+
+/* Edge Specific Fixes */
+@supports (-ms-ime-align: auto) {
+    .modal-content {
+        max-height: calc(100vh - 2rem);
+    }
+}
+
+/* Firefox Specific Fixes */
+@-moz-document url-prefix() {
+    .task-checkbox {
+        -moz-appearance: none;
+    }
+    
+    select {
+        -moz-appearance: none;
+    }
+}
