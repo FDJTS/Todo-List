@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Todo PWA</title>
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" type="image/png" sizes="192x192" href="assets/icon-192.png">
+    <link rel="apple-touch-icon" href="assets/icon-192.png">
+    <meta name="theme-color" content="#2563eb">
+    <link rel="stylesheet" href="styles/main.css">
+    <link rel="stylesheet" href="styles/themes.css">
+</head>
+<body class="theme-light">
+    <!-- Header -->
+    <header class="app-header">
+        <div class="header-content">
+            <h1 class="app-title">
+                <span class="app-logo">✓</span>
+                Todo PWA
+            </h1>
+            <div class="header-actions">
+                <button class="btn btn-icon" id="statsBtn" title="Statistics">📊</button>
+                <button class="btn btn-icon" id="relationshipBtn" title="Task Relations">🔗</button>
+                <button class="btn btn-icon" id="themeBtn" title="Toggle Theme">🌙</button>
+                <button class="btn btn-icon" id="helpBtn" title="Help Tour">❓</button>
+                <div class="dropdown">
+                    <button class="btn btn-icon" id="menuBtn" title="Menu">⋮</button>
+                    <div class="dropdown-content">
+                        <button id="importBtn">📥 Import</button>
+                        <button id="exportBtn">📤 Export</button>
+                        <hr>
+                        <button id="undoBtn">↶ Undo</button>
+                        <button id="redoBtn">↷ Redo</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Search and Filter Bar -->
+    <div class="search-filter-bar">
+        <div class="search-container">
+            <input type="text" id="searchInput" placeholder="Search tasks..." class="search-input">
+            <button class="search-clear" id="clearSearch">✕</button>
+        </div>
+        <div class="filter-container">
+            <select id="statusFilter" class="filter-select">
+                <option value="">All Status</option>
+                <option value="pending">Pending</option>
+                <option value="completed">Completed</option>
+                <option value="overdue">Overdue</option>
+            </select>
+            <select id="tagFilter" class="filter-select">
+                <option value="">All Tags</option>
+            </select>
+            <select id="sortBy" class="filter-select">
+                <option value="created">Created Date</option>
+                <option value="dueDate">Due Date</option>
+                <option value="title">Title</option>
+                <option value="priority">Priority</option>
+            </select>
+            <button class="btn btn-icon" id="sortOrder" title="Sort Order">↓</button>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Add Task Form -->
+        <div class="add-task-container">
+            <button class="btn btn-primary" id="addTaskBtn">+ Add Task</button>
+        </div>
+
+        <!-- Task List -->
+        <div class="task-list-container">
+            <div id="taskList" class="task-list"></div>
+            <div id="emptyState" class="empty-state">
+                <div class="empty-icon">📝</div>
+                <h3>No tasks yet</h3>
+                <p>Create your first task to get started!</p>
+            </div>
+        </div>
+    </main>
+
+    <!-- Task Modal -->
+    <div id="taskModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modalTitle">Add Task</h2>
+                <button class="btn btn-icon modal-close">&times;</button>
+            </div>
+            <form id="taskForm" class="task-form">
+                <div class="form-group">
+                    <label for="taskTitle">Title *</label>
+                    <input type="text" id="taskTitle" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="taskDescription">Description</label>
+                    <textarea id="taskDescription" rows="3"></textarea>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="taskDueDate">Due Date</label>
+                        <input type="datetime-local" id="taskDueDate">
+                    </div>
+                    <div class="form-group">
+                        <label for="taskPriority">Priority</label>
+                        <select id="taskPriority">
+                            <option value="low">Low</option>
+                            <option value="medium" selected>Medium</option>
+                            <option value="high">High</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="taskTags">Tags</label>
+                    <input type="text" id="taskTags" placeholder="Separate tags with commas">
+                </div>
+
+                <div class="form-group">
+                    <label for="taskRecurrence">Recurrence</label>
+                    <select id="taskRecurrence">
+                        <option value="">None</option>
+                        <option value="daily">Daily</option>
+                        <option value="weekly">Weekly</option>
+                        <option value="monthly">Monthly</option>
+                        <option value="yearly">Yearly</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="taskRelations">Related Tasks</label>
+                    <select id="taskRelations" multiple>
+                        <!-- Populated dynamically -->
+                    </select>
+                </div>
+
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary" id="cancelBtn">Cancel</button>
+                    <button type="submit" class="btn btn-primary" id="saveBtn">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Statistics Modal -->
+    <div id="statsModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Statistics</h2>
+                <button class="btn btn-icon modal-close">&times;</button>
+            </div>
+            <div id="statsContent" class="stats-content">
+                <!-- Populated dynamically -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Relations Graph Modal -->
+    <div id="relationshipModal" class="modal modal-large">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Task Relations</h2>
+                <button class="btn btn-icon modal-close">&times;</button>
+            </div>
+            <div id="relationshipGraph" class="relationship-graph">
+                <!-- Force graph will be rendered here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Onboarding Tour -->
+    <div id="tourOverlay" class="tour-overlay hidden">
+        <div class="tour-step">
+            <div class="tour-content">
+                <h3 id="tourTitle">Welcome to Todo PWA!</h3>
+                <p id="tourDescription">Let's take a quick tour of the features.</p>
+                <div class="tour-actions">
+                    <button class="btn btn-secondary" id="skipTour">Skip</button>
+                    <button class="btn btn-primary" id="nextTour">Next</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notification Container -->
+    <div id="notificationContainer" class="notification-container"></div>
+
+    <script src="js/app.js"></script>
+    <script src="js/task.js"></script>
+    <script src="js/storage.js"></script>
+    <script src="js/ui.js"></script>
+    <script src="js/search.js"></script>
+    <script src="js/stats.js"></script>
+    <script src="js/graph.js"></script>
+    <script src="js/tour.js"></script>
+    <script src="js/notifications.js"></script>
+    <script src="js/themes.js"></script>
+    <script src="js/import-export.js"></script>
+    <script src="js/undo-redo.js"></script>
+
+    <script>
+        // Register service worker
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('sw.js')
+                .then(registration => console.log('SW registered'))
+                .catch(error => console.log('SW registration failed'));
+        }
+    </script>
+</body>
+</html>
