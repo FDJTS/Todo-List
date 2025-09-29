@@ -333,11 +333,22 @@
     <div id="toast-container" class="toast-container" aria-live="polite" aria-atomic="true"></div>
 
     <!-- JavaScript -->
+    <script>
+        console.log('Inline script executed - DOM loading...');
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log('DOMContentLoaded from inline script');
+        });
+    </script>
     <script src="js/utils.js"></script>
+    <script>console.log('Utils loaded');</script>
     <script src="js/storage.js"></script>
+    <script>console.log('Storage loaded');</script>
     <script src="js/notifications.js"></script>
+    <script>console.log('Notifications loaded');</script>
     <script src="js/ui.js"></script>
+    <script>console.log('UI loaded');</script>
     <script src="js/app.js"></script>
+    <script>console.log('App loaded');</script>
     
     <!-- Service Worker Registration -->
     <script>

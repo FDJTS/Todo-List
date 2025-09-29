@@ -25,7 +25,7 @@ class StorageManager {
      * Check if localStorage is supported
      * @returns {boolean} True if supported
      */
-    checkLocalStorageSupported() {
+    checkLocalStorageSupport() {
         try {
             const test = '__storage_test__';
             localStorage.setItem(test, test);

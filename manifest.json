@@ -1,0 +1,85 @@
+{
+    "name": "Todo List App",
+    "short_name": "TodoList",
+    "description": "A modern, feature-rich todo list application with performance optimizations and accessibility features",
+    "start_url": "/",
+    "scope": "/",
+    "display": "standalone",
+    "orientation": "portrait-primary",
+    "theme_color": "#2563eb",
+    "background_color": "#ffffff",
+    "lang": "en",
+    "dir": "ltr",
+    "categories": ["productivity", "utilities"],
+    "icons": [
+        {
+            "src": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192' fill='%232563eb'%3E%3Cpath d='M72 144l12 12 24-24m36 12a54 54 0 11-108 0 54 54 0 01108 0z'/%3E%3C/svg%3E",
+            "sizes": "192x192",
+            "type": "image/svg+xml"
+        },
+        {
+            "src": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512' fill='%232563eb'%3E%3Cpath d='M192 384l32 32 64-64m96 32a144 144 0 11-288 0 144 144 0 01288 0z'/%3E%3C/svg%3E",
+            "sizes": "512x512",
+            "type": "image/svg+xml",
+            "purpose": "any maskable"
+        }
+    ],
+    "screenshots": [
+        {
+            "src": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1280 800' fill='%23f8fafc'%3E%3Crect width='1280' height='800' fill='%23f8fafc'/%3E%3Ctext x='640' y='400' text-anchor='middle' fill='%232563eb' font-size='48' font-family='sans-serif'%3ETodo List App Screenshot%3C/text%3E%3C/svg%3E",
+            "sizes": "1280x800",
+            "type": "image/svg+xml",
+            "form_factor": "wide",
+            "label": "Desktop view of Todo List App"
+        },
+        {
+            "src": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 390 844' fill='%23f8fafc'%3E%3Crect width='390' height='844' fill='%23f8fafc'/%3E%3Ctext x='195' y='422' text-anchor='middle' fill='%232563eb' font-size='24' font-family='sans-serif'%3EMobile View%3C/text%3E%3C/svg%3E",
+            "sizes": "390x844",
+            "type": "image/svg+xml",
+            "form_factor": "narrow",
+            "label": "Mobile view of Todo List App"
+        }
+    ],
+    "shortcuts": [
+        {
+            "name": "Add New Task",
+            "short_name": "New Task",
+            "description": "Quickly add a new task",
+            "url": "/?action=new",
+            "icons": [
+                {
+                    "src": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 96 96' fill='%2310b981'%3E%3Cpath d='M48 24a1.5 1.5 0 011.5 1.5v21h21a1.5 1.5 0 010 3h-21v21a1.5 1.5 0 01-3 0v-21h-21a1.5 1.5 0 010-3h21v-21A1.5 1.5 0 0148 24z'/%3E%3C/svg%3E",
+                    "sizes": "96x96",
+                    "type": "image/svg+xml"
+                }
+            ]
+        },
+        {
+            "name": "View Pending Tasks",
+            "short_name": "Pending",
+            "description": "View all pending tasks",
+            "url": "/?filter=pending",
+            "icons": [
+                {
+                    "src": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 96 96' fill='%23f59e0b'%3E%3Cpath d='M48 12a36 36 0 100 72 36 36 0 000-72zm0 66a30 30 0 110-60 30 30 0 010 60zm0-48a3 3 0 013 3v15a3 3 0 01-6 0V33a3 3 0 013-3zm0 30a3 3 0 100-6 3 3 0 000 6z'/%3E%3C/svg%3E",
+                    "sizes": "96x96",
+                    "type": "image/svg+xml"
+                }
+            ]
+        }
+    ],
+    "prefer_related_applications": false,
+    "edge_side_panel": {
+        "preferred_width": 400
+    },
+    "launch_handler": {
+        "client_mode": "focus-existing"
+    },
+    "handle_links": "preferred",
+    "protocol_handlers": [
+        {
+            "protocol": "web+todo",
+            "url": "/?task=%s"
+        }
+    ]
+}
