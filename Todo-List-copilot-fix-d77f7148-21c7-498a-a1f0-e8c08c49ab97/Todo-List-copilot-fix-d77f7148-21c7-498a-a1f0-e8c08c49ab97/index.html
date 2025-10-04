@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Todo PWA</title>
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" type="image/svg+xml" href="todo-list-svgrepo-com.svg">
+    <link rel="apple-touch-icon" href="assets/icon-192.png">
+    <meta name="theme-color" content="#2563eb">
+    <link rel="stylesheet" href="styles/main.css">
+    <link rel="stylesheet" href="styles/themes.css">
+</head>
+<body class="theme-light">
+    <!-- Header -->
+    <header class="app-header" role="banner">
+        <div class="header-content">
+            <h1 class="app-title">
+                <span class="app-logo">✓</span>
+                Todo PWA
+            </h1>
+                <div class="header-actions">
+                    <div id="syncStatus" class="sync-pill" aria-live="polite" title="Sync status">Sync</div>
+                <div id="authArea" class="auth-area" aria-label="Authentication area">
+                    <button id="loginOpenBtn" class="btn btn-secondary small" aria-label="Open login dialog">Login / Sign Up</button>
+                    <div id="userMenu" class="user-menu hidden" aria-haspopup="true">
+                        <button id="userAvatarBtn" class="avatar-btn" aria-label="Account menu">
+                            <span id="userAvatarIcon">👤</span>
+                            <span id="currentUsername" class="username-label"></span>
+                        </button>
+                        <div class="user-dropdown">
+                            <button class="user-dropdown-item" id="openSettingsBtn">⚙️ Settings</button>
+                            <button class="user-dropdown-item" id="openCalendarPrefsBtn">🗓️ Calendar Preferences</button>
+                            <hr>
+                            <button class="user-dropdown-item" id="logoutBtn">🚪 Logout</button>
+                        </div>
+                    </div>
+                </div>
+                <button class="btn btn-icon" id="statsBtn" title="Statistics" aria-label="Open statistics panel">📊</button>
+                <button class="btn btn-icon" id="relationshipBtn" title="Task Relations" aria-label="Show task relationships graph">🔗</button>
+                <button class="btn btn-icon" id="themeBtn" title="Toggle Theme" aria-label="Change theme">🌙</button>
+                <button class="btn btn-icon" id="helpBtn" title="Help Tour" aria-label="Start help tour">❓</button>
+                <div class="dropdown">
+                    <button class="btn btn-icon" id="menuBtn" title="Menu" aria-haspopup="true" aria-expanded="false" aria-label="Open menu">⋮</button>
+                    <div class="dropdown-content">
+                        <button id="importBtn" aria-label="Import tasks">📥 Import</button>
+                        <button id="exportBtn" aria-label="Export tasks">📤 Export</button>
+                        <button id="quarantineBtn" aria-label="Review quarantined tasks">🛡️ Quarantine</button>
+                        <hr>
+                        <button id="undoBtn" aria-label="Undo last action">↶ Undo</button>
+                        <button id="redoBtn" aria-label="Redo last undone action">↷ Redo</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Search and Filter Bar -->
+    <div class="search-filter-bar" role="search" aria-label="Search and filter tasks">
+        <div class="search-container">
+            <input type="text" id="searchInput" placeholder="Search tasks..." class="search-input" aria-label="Search tasks">
+            <button class="search-clear" id="clearSearch" aria-label="Clear search">✕</button>
+        </div>
+        <div class="filter-container">
+            <select id="statusFilter" class="filter-select" aria-label="Filter by status">
+                <option value="">All Status</option>
+                <option value="pending">Pending</option>
+                <option value="completed">Completed</option>
+                <option value="overdue">Overdue</option>
+            </select>
+            <select id="tagFilter" class="filter-select" aria-label="Filter by tag">
+                <option value="">All Tags</option>
+            </select>
+            <select id="sortBy" class="filter-select" aria-label="Sort tasks by field">
+                <option value="created">Created Date</option>
+                <option value="dueDate">Due Date</option>
+                <option value="title">Title</option>
+                <option value="priority">Priority</option>
+            </select>
+            <button class="btn btn-icon" id="sortOrder" title="Sort Order" aria-label="Toggle sort order">↓</button>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <main class="main-content" role="main">
+        <!-- Add Task Form -->
+        <div class="add-task-container">
+            <button class="btn btn-primary" id="addTaskBtn" aria-label="Add new task">+ Add Task</button>
+        </div>
+
+        <!-- Task List -->
+        <div class="task-list-container" role="region" aria-label="Task list">
+            <div id="taskList" class="task-list" role="list"></div>
+            <div id="emptyState" class="empty-state" role="note" aria-live="polite">
+                <div class="empty-icon">📝</div>
+                <h3>No tasks yet</h3>
+                <p>Create your first task to get started!</p>
+            </div>
+        </div>
+    </main>
+
+    <!-- Task Modal -->
+    <!-- Auth Modal -->
+    <div id="authModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="authTitle">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="authTitle">Sign In</h2>
+                <button class="btn btn-icon modal-close" data-close-auth aria-label="Close auth modal">&times;</button>
+            </div>
+            <form id="authForm" class="auth-form">
+                <div>
+                    <label for="authUsername">Username</label>
+                    <input id="authUsername" type="text" required autocomplete="username">
+                </div>
+                <div>
+                    <label for="authPassword">Password</label>
+                    <input id="authPassword" type="password" required autocomplete="current-password">
+                </div>
+                <div class="auth-actions">
+                    <button type="button" class="btn btn-secondary" id="authRegisterBtn">Register</button>
+                    <button type="submit" class="btn btn-primary" id="authLoginBtn">Login</button>
+                </div>
+                <small id="authError" class="auth-error"></small>
+            </form>
+        </div>
+    </div>
+    <div id="taskModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modalTitle">Add Task</h2>
+                <button class="btn btn-icon modal-close" aria-label="Close modal">&times;</button>
+            </div>
+            <form id="taskForm" class="task-form">
+                <div class="form-group">
+                    <label for="taskTitle">Title *</label>
+                    <input type="text" id="taskTitle" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="taskDescription">Description</label>
+                    <textarea id="taskDescription" rows="3"></textarea>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="taskDueDate">Due Date</label>
+                        <input type="datetime-local" id="taskDueDate">
+                    </div>
+                    <div class="form-group">
+                        <label for="taskPriority">Priority</label>
+                        <select id="taskPriority">
+                            <option value="low">Low</option>
+                            <option value="medium" selected>Medium</option>
+                            <option value="high">High</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="taskTags">Tags</label>
+                    <input type="text" id="taskTags" placeholder="Separate tags with commas">
+                </div>
+
+                <div class="form-group">
+                    <label for="taskRecurrence">Recurrence</label>
+                    <select id="taskRecurrence">
+                        <option value="">None</option>
+                        <option value="daily">Daily</option>
+                        <option value="weekly">Weekly</option>
+                        <option value="monthly">Monthly</option>
+                        <option value="yearly">Yearly</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="taskReminder">Reminder</label>
+                    <input type="datetime-local" id="taskReminder" aria-label="Reminder time">
+                    <small class="form-hint">Optional reminder separate from due date.</small>
+                </div>
+
+                <div class="form-group">
+                    <label for="taskRelations">Related Tasks</label>
+                    <select id="taskRelations" multiple aria-label="Select related tasks">
+                        <!-- Populated dynamically -->
+                    </select>
+                </div>
+
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary" id="cancelBtn">Cancel</button>
+                    <button type="submit" class="btn btn-primary" id="saveBtn">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <!-- Settings Modal -->
+    <div id="settingsModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="settingsTitle">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="settingsTitle">Settings</h2>
+                <button class="btn btn-icon modal-close" aria-label="Close settings">&times;</button>
+            </div>
+            <form id="settingsForm" class="settings-form">
+                <div class="form-group">
+                    <label for="settingListDensity">List Density</label>
+                    <select id="settingListDensity">
+                        <option value="comfortable">Comfortable</option>
+                        <option value="compact">Compact</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label><input type="checkbox" id="settingShowCompleted"> Show completed tasks</label>
+                </div>
+                <div class="form-group">
+                    <label for="settingWeekStart">Week Starts On</label>
+                    <select id="settingWeekStart">
+                        <option value="0">Sunday</option>
+                        <option value="1">Monday</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="settingCalendarColor">Calendar Accent Color</label>
+                    <input type="color" id="settingCalendarColor" value="#2563eb">
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary modal-close">Close</button>
+                    <button type="submit" class="btn btn-primary">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Statistics Modal -->
+    <div id="statsModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="statsModalTitle">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="statsModalTitle">Statistics</h2>
+                <button class="btn btn-icon modal-close" aria-label="Close statistics modal">&times;</button>
+            </div>
+            <div id="statsContent" class="stats-content">
+                <!-- Populated dynamically -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Relations Graph Modal -->
+    <div id="relationshipModal" class="modal modal-large" role="dialog" aria-modal="true" aria-labelledby="relationshipModalTitle">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="relationshipModalTitle">Task Relations</h2>
+                <button class="btn btn-icon modal-close" aria-label="Close task relations modal">&times;</button>
+            </div>
+            <div id="relationshipGraph" class="relationship-graph">
+                <!-- Force graph will be rendered here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Onboarding Tour -->
+    <div id="tourOverlay" class="tour-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="tourTitle" aria-describedby="tourDescription">
+        <div class="tour-step">
+            <div class="tour-content">
+                <h3 id="tourTitle">Welcome to Todo PWA!</h3>
+                <p id="tourDescription">Let's take a quick tour of the features.</p>
+                <div class="tour-actions">
+                    <button class="btn btn-secondary" id="skipTour">Skip</button>
+                    <button class="btn btn-primary" id="nextTour">Next</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notification Container -->
+    <div id="notificationContainer" class="notification-container" role="region" aria-live="polite" aria-label="Notifications"></div>
+
+    <!-- Focus Mode Overlay -->
+    <div id="focusOverlay" class="focus-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="focusTitle">
+        <div class="focus-panel">
+            <div class="focus-header">
+                <h2 id="focusTitle" class="focus-title"></h2>
+                <div class="focus-header-actions">
+                    <button id="focusPrev" class="btn btn-icon" title="Previous Task" aria-label="Previous task">←</button>
+                    <button id="focusNext" class="btn btn-icon" title="Next Task" aria-label="Next task">→</button>
+                    <button id="focusClose" class="btn btn-icon" title="Close Focus Mode" aria-label="Exit focus mode">✕</button>
+                </div>
+            </div>
+            <div class="focus-body">
+                <div id="focusMeta" class="focus-meta"></div>
+                <div id="focusDescription" class="focus-description"></div>
+                <div id="focusRelations" class="focus-relations"></div>
+                <div class="focus-actions">
+                    <button id="focusToggleComplete" class="btn btn-primary">Mark Complete</button>
+                    <button id="focusEdit" class="btn btn-secondary">Edit</button>
+                    <button id="focusSnooze15" class="btn btn-secondary" title="Snooze reminder 15 minutes">Snooze 15m</button>
+                    <button id="focusSnooze60" class="btn btn-secondary" title="Snooze reminder 60 minutes">Snooze 1h</button>
+                    <button id="focusAddCalendar" class="btn btn-secondary" title="Add to Google Calendar">Add to Google Calendar</button>
+                    <button id="focusCopyNotion" class="btn btn-secondary" title="Copy Notion-style block">Copy Notion Block</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/auth-adapter.js"></script>
+    <script src="js/remote-tasks.js"></script>
+        <script>
+            // Backend API base (set this to your deployed Rust API endpoint, e.g. https://api.yourdomain.com)
+            // Leave undefined to fall back to local (in-browser) demo auth.
+            window.TODO_API_BASE = undefined; // e.g. 'https://todo-api.yourdomain.com'
+        </script>
+    <script src="js/app.js"></script>
+    <script src="js/task.js"></script>
+    <script src="js/storage.js"></script>
+    <script src="js/ui.js"></script>
+    <script src="js/search.js"></script>
+    <script src="js/stats.js"></script>
+    <script src="js/graph.js"></script>
+    <script src="js/tour.js"></script>
+    <script src="js/notifications.js"></script>
+    <script src="js/themes.js"></script>
+    <script src="js/import-export.js"></script>
+    <script src="js/undo-redo.js"></script>
+
+    <script>
+        // Register service worker
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('sw.js')
+                .then(registration => console.log('SW registered'))
+                .catch(error => console.log('SW registration failed'));
+        }
+
+        // Keyboard quick add: press Enter on page (not in input) to open Add Task
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' && !e.ctrlKey && !e.metaKey && !e.altKey) {
+                const active = document.activeElement;
+                const skipTags = ['INPUT','TEXTAREA','SELECT','BUTTON'];
+                const modalOpen = document.querySelector('.modal.active');
+                if (!modalOpen && (!active || !skipTags.includes(active.tagName))) {
+                    const btn = document.getElementById('addTaskBtn');
+                    btn && btn.click();
+                }
+            }
+        });
+    </script>
+</body>
+</html>

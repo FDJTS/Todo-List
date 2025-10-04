@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <meta name="theme-color" content="#2c7be5" />
+    <link rel="manifest" href="manifest.json" />
+    <link rel="stylesheet" href="style.css">
+    <link href='https://cdn.boxicons.com/fonts/basic/boxicons.min.css' rel='stylesheet'>
+</head>
+<body>
+    <main class="app-wrapper">
+        <section class="todo-app" aria-label="Task Manager">
+            <header class="app-header">
+                <div class="title-block">
+                    <h1 class="app-title">Todo list</h1>
+                    <p class="subtitle">Add your todo list here and complete them</p>
+                </div>
+                <div class="profile-area">
+                    <button id="profileBtn" class="avatar-btn" aria-label="Profile menu" title="Profile">
+                        <span id="avatarInitial">U</span>
+                    </button>
+                    <div id="profileMenu" class="profile-menu hidden" role="menu" aria-hidden="true">
+                        <div class="profile-info">
+                            <strong id="profName">Guest</strong>
+                            <small id="profEmail" class="dim">Not signed in</small>
+                        </div>
+                        <button type="button" class="menu-item" id="btnProfile">Account Settings</button>
+                        <button type="button" class="menu-item" id="btnLogout">Logout</button>
+                    </div>
+                </div>
+                <button id="add" class="btn-add" aria-label="Add new task" title="Add Task">
+                    <i class='bxr bx-plus-circle'></i>
+                </button>
+            </header>
+            <div class="controls" aria-label="Task controls">
+                <form id="taskForm" class="task-form" autocomplete="off" aria-label="Add task form">
+                    <input type="text" id="taskInput" name="title" placeholder="Task title" aria-label="Task title" required maxlength="200" />
+                    <input type="text" id="tagsInput" name="tags" placeholder="Tags (comma / space)" aria-label="Tags" maxlength="120" />
+                    <input type="date" id="dueInput" name="due" aria-label="Due date" />
+                    <input type="text" id="relInput" name="relations" placeholder="Related IDs (space)" aria-label="Related task IDs" maxlength="120" />
+                    <textarea id="descInput" name="description" placeholder="Description (optional)" aria-label="Description" maxlength="500"></textarea>
+                    <select id="recurrence" name="recurrence" aria-label="Recurrence">
+                        <option value="none" selected>One-time</option>
+                        <option value="daily">Daily</option>
+                        <option value="weekly">Weekly</option>
+                        <option value="monthly">Monthly</option>
+                    </select>
+                    <button type="submit" class="btn primary" aria-label="Add task">Add</button>
+                </form>
+                <div id="activeTagFilter" class="tag-filter hidden" aria-live="polite"></div>
+                <div class="filters-row">
+                    <div class="group">
+                        <input type="search" id="search" placeholder="Search..." aria-label="Search tasks" />
+                    </div>
+                    <div class="group">
+                        <select id="filterStatus" aria-label="Filter status">
+                            <option value="all">All</option>
+                            <option value="open">Open</option>
+                            <option value="done">Completed</option>
+                            <option value="overdue">Overdue</option>
+                            <option value="recurring">Recurring</option>
+                        </select>
+                    </div>
+                    <div class="group">
+                        <select id="sortBy" aria-label="Sort tasks">
+                            <option value="newest">Newest</option>
+                            <option value="oldest">Oldest</option>
+                            <option value="az">A → Z</option>
+                            <option value="za">Z → A</option>
+                            <option value="due_asc">Due (Soonest)</option>
+                            <option value="due_desc">Due (Latest)</option>
+                        </select>
+                    </div>
+                    <div class="group">
+                        <button id="btnClearCompleted" class="btn" type="button">Clear Done</button>
+                        <button id="btnMarkAll" class="btn" type="button">Mark All Done</button>
+                        <button id="btnUndo" class="btn" type="button" title="Undo (Ctrl+Z)" disabled>Undo</button>
+                        <button id="btnRedo" class="btn" type="button" title="Redo (Ctrl+Y)" disabled>Redo</button>
+                        <button id="btnMap" class="btn" type="button" title="Task Relation Map">Map</button>
+                    </div>
+                    <div class="group">
+                        <button id="btnExport" class="btn" type="button">Export</button>
+                        <label class="btn file-label" for="importFile">Import</label>
+                        <input id="importFile" type="file" accept="application/json" class="visually-hidden" aria-label="Import JSON" />
+                    </div>
+                    <div class="group">
+                        <button id="themeToggle" type="button" class="btn" aria-label="Toggle theme">🌙</button>
+                        <button id="notifyBtn" type="button" class="btn" aria-label="Enable notifications">🔔</button>
+                    </div>
+                </div>
+                <div class="stats" aria-live="polite" id="statsBar"></div>
+            </div>
+            <div id="icons_container" class="tasks-shell">
+                <div class="tasks-list" id="icons" aria-live="polite" aria-label="Tasks list"></div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Welcome Overlay -->
+    <div id="welcomeOverlay" class="overlay visible" role="dialog" aria-modal="true">
+        <div class="overlay-content">
+            <h2>Welcome to <span class="brand">Ultimate Todo</span></h2>
+            <p class="lead">Organize tasks, link ideas, track progress, and grow productivity.</p>
+            <button id="btnGetStarted" class="btn primary lg">Get Started</button>
+        </div>
+    </div>
+
+    <!-- Auth Modal -->
+    <div id="authModal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="authTitle">
+        <div class="modal-box">
+            <h3 id="authTitle">Sign In</h3>
+            <form id="authForm" autocomplete="off">
+                <input type="text" id="authName" placeholder="Name" required maxlength="60" />
+                <input type="email" id="authEmail" placeholder="Email" required maxlength="120" />
+                <input type="password" id="authPass" placeholder="Password" required minlength="4" />
+                <button type="submit" class="btn primary full">Login</button>
+            </form>
+            <div class="divider"><span>OR</span></div>
+            <button id="googleLogin" class="btn full google-btn">Continue with Google</button>
+            <button id="authClose" class="btn subtle full">Close</button>
+        </div>
+    </div>
+
+    <!-- Task Map Modal (Relations visualization placeholder) -->
+    <div id="mapModal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="mapTitle">
+        <div class="modal-box large">
+            <h3 id="mapTitle">Task Relation Map</h3>
+            <div id="mapCanvas" class="map-canvas">
+                <canvas id="graphCanvas" width="800" height="480" aria-label="Relations graph" role="img"></canvas>
+                <div class="graph-overlay">
+                    <div class="legend">
+                        <strong>Legend</strong>
+                        <div><span class="swatch sw-pending"></span> Pending</div>
+                        <div><span class="swatch sw-done"></span> Done</div>
+                        <div><span class="swatch sw-rec"></span> Recurring</div>
+                    </div>
+                    <div class="graph-controls">
+                        <button class="btn tiny" id="graphReset" type="button">Reset</button>
+                        <button class="btn tiny" id="graphPause" type="button">Pause</button>
+                        <button class="btn tiny" id="graphCenter" type="button">Center</button>
+                        <span class="hint">Scroll to zoom • Drag background to pan • Click node to focus</span>
+                    </div>
+                </div>
+            </div>
+            <button id="mapClose" class="btn full subtle">Close</button>
+        </div>
+    </div>
+
+    <!-- Tour Tooltip Container -->
+    <div id="tourLayer" class="tour-layer hidden" aria-live="polite"></div>
+    <script src="script.js"></script>
+</body>
+</html>
